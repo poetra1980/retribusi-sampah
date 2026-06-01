@@ -15,6 +15,27 @@ const toBoolean = (value, fallback = false) => {
   return ['true', '1', 'yes', 'on'].includes(String(value).toLowerCase());
 };
 
+const parseDatabaseUrl = (url) => {
+  if (!url) return null;
+
+  try {
+    const parsed = new URL(url);
+
+    return {
+      host: parsed.hostname || 'localhost',
+      port: toNumber(parsed.port, 5432),
+      user: decodeURIComponent(parsed.username) || 'postgres',
+      password: decodeURIComponent(parsed.password) || 'postgres',
+      name: parsed.pathname ? parsed.pathname.replace(/^\//, '') : 'retribusi_sampah'
+    };
+  } catch {
+    return null;
+  }
+};
+
+const dbUrl = parseDatabaseUrl(process.env.DATABASE_URL);
+const defaultSsl = process.env.NODE_ENV === 'production' || Boolean(dbUrl);
+
 const env = {
   nodeEnv: process.env.NODE_ENV || 'development',
   appName: process.env.APP_NAME || 'Digital Retribusi Sampah API',
@@ -25,12 +46,12 @@ const env = {
   requestBodyLimit: process.env.REQUEST_BODY_LIMIT || '1mb',
   logLevel: process.env.LOG_LEVEL || 'info',
   database: {
-    host: process.env.DATABASE_HOST || 'localhost',
-    port: toNumber(process.env.DATABASE_PORT, 5432),
-    name: process.env.DATABASE_NAME || 'retribusi_sampah',
-    user: process.env.DATABASE_USER || 'postgres',
-    password: process.env.DATABASE_PASSWORD || 'postgres',
-    ssl: toBoolean(process.env.DATABASE_SSL, process.env.NODE_ENV === 'production'),
+    host: dbUrl ? dbUrl.host : (process.env.DATABASE_HOST || 'localhost'),
+    port: dbUrl ? dbUrl.port : toNumber(process.env.DATABASE_PORT, 5432),
+    name: dbUrl ? dbUrl.name : (process.env.DATABASE_NAME || 'retribusi_sampah'),
+    user: dbUrl ? dbUrl.user : (process.env.DATABASE_USER || 'postgres'),
+    password: dbUrl ? dbUrl.password : (process.env.DATABASE_PASSWORD || 'postgres'),
+    ssl: toBoolean(process.env.DATABASE_SSL, defaultSsl),
     poolMin: toNumber(process.env.DATABASE_POOL_MIN, 2),
     poolMax: toNumber(process.env.DATABASE_POOL_MAX, 10),
     idleTimeoutMillis: toNumber(process.env.DATABASE_IDLE_TIMEOUT_MS, 30000),
