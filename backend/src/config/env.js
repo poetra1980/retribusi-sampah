@@ -30,7 +30,7 @@ const env = {
     name: process.env.DATABASE_NAME || 'retribusi_sampah',
     user: process.env.DATABASE_USER || 'postgres',
     password: process.env.DATABASE_PASSWORD || 'postgres',
-    ssl: toBoolean(process.env.DATABASE_SSL, false),
+    ssl: toBoolean(process.env.DATABASE_SSL, process.env.NODE_ENV === 'production'),
     poolMin: toNumber(process.env.DATABASE_POOL_MIN, 2),
     poolMax: toNumber(process.env.DATABASE_POOL_MAX, 10),
     idleTimeoutMillis: toNumber(process.env.DATABASE_IDLE_TIMEOUT_MS, 30000),
