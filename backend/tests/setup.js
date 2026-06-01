@@ -1,0 +1,10 @@
+process.env.NODE_ENV = 'test';
+process.env.APP_PORT = '0';
+process.env.JWT_ACCESS_SECRET = 'test-access-secret-key-for-jest-tests';
+process.env.JWT_REFRESH_SECRET = 'test-refresh-secret-key-for-jest-tests';
+process.env.JWT_ACCESS_EXPIRES_IN = '15m';
+process.env.JWT_REFRESH_EXPIRES_IN = '7d';
+process.env.BCRYPT_SALT_ROUNDS = '4';
+process.env.CORS_ORIGIN = '*';
+process.env.LOG_LEVEL = 'silent';
+process.env.REQUEST_BODY_LIMIT = '1mb';

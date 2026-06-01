@@ -1,0 +1,52 @@
+databases:
+  - name: retribusi-sampah-db
+    plan: free
+    databaseName: retribusi_sampah
+    user: retribusi_user
+
+services:
+  - type: web
+    name: retribusi-sampah-api
+    runtime: docker
+    plan: free
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_PORT
+        value: "3000"
+      - key: APP_HOST
+        value: 0.0.0.0
+      - key: API_PREFIX
+        value: /api/v1
+      - key: JWT_ACCESS_EXPIRES_IN
+        value: 15m
+      - key: JWT_REFRESH_EXPIRES_IN
+        value: 7d
+      - key: BCRYPT_SALT_ROUNDS
+        value: "12"
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      - key: JWT_REFRESH_SECRET
+        generateValue: true
+      - key: DATABASE_HOST
+        fromDatabase:
+          name: retribusi-sampah-db
+          property: host
+      - key: DATABASE_PORT
+        fromDatabase:
+          name: retribusi-sampah-db
+          property: port
+      - key: DATABASE_NAME
+        fromDatabase:
+          name: retribusi-sampah-db
+          property: database
+      - key: DATABASE_USER
+        fromDatabase:
+          name: retribusi-sampah-db
+          property: user
+      - key: DATABASE_PASSWORD
+        fromDatabase:
+          name: retribusi-sampah-db
+          property: password
